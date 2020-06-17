@@ -3,6 +3,7 @@ import logging
 import sys
 import os
 import requests
+import json
 
 
 def get_logger():
@@ -24,8 +25,9 @@ def set_logger():
 header_regex = re.compile(r"#\s*(?P<key>.*?):\s*(?P<value>.*)")
 
 def parse_header(file_path):
-    header = []
-    found_name = False
+    fields = []
+    name = None
+    categories = None
     with open(file_path) as f:
         for line in f:
             line = line.strip()
@@ -38,43 +40,48 @@ def parse_header(file_path):
                 if match:
                     key, value = match.group("key"), match.group("value")
                     if key.lower() == "name":
-                        found_name = True
-                        header = [(key, value)] + header
+                        name = value
+                    elif key.lower() == "category":
+                        categories = [v.strip() for v in value.split(',') if v.strip()]
                     else:
-                        header.append((key, value))
+                        fields.append((key, value))
                 else:
-                    get_logger().error("file: %s - line does not match with regex: %s" % (file_path, line))
-        if header and not found_name:
-            get_logger().error("found header but no name field: %s" % file_path)
-            header = []
+                    get_logger().warning("file: %s - line does not match with regex: %s" % (file_path, line))
 
-    return header
+    if not fields:
+        raise KeyError("no header: %s" % file_path)
+    elif not name:
+        raise KeyError("found header but no name field: %s" % file_path)
+    elif not categories:
+        raise KeyError("found header but no categories: %s" % file_path)
+
+    return {"name": name, "categories": categories, "fields": fields}
 
 
 def to_markdown(tool):
-    header = "## {}".format(tool[0][1])
+    header = "### {}".format(tool["name"])
     markdown = [header]
     tmp = "**{}**: {}"
-    for key,val in tool[1:]:
+    markdown.append(tmp.format("Categories", ",".join(tool["categories"])))
+    for key, val in tool["fields"]:
         markdown.append(tmp.format(key,val))
 
     return "\n\n".join(markdown)
 
 
 def update_gitbook(content, devel=False):
-    url = "https://api-beta.gitbook.com/v1/spaces/{space_uid}/content/v/{variant_id}/id/{page_id}"
+    url = "https://api-beta.gitbook.com/v1/spaces/{space_uid}/content/v/{variant_id}/id/{page_id}?format=markdown"
 
-    TOKEN = "YOUR_TOKEN"
-    SPACE_UID = "-M9YgMxBUB7r_KaCaIVs"
-    VARIANT_ID = "master"
-    PAGE_ID = "-M9YgPBatM7Sl6phEUIp"
+    with open("gitbook-config.json") as gitbook_config:
+        cfg = json.load(gitbook_config)
+
     DATA = {
         "document": {
             "transforms": [
                 {
-                    "type": "append",
+                    "type": "replace",
                     "fragment": {
-                        "markdown": "**test**"
+                        "markdown": content
                     }
                 }
             ]
@@ -82,7 +89,7 @@ def update_gitbook(content, devel=False):
     }
 
     with open("tools.md", "w") as f:
-        f.write(content+"\n\n")
+        f.write(content+"\n")
 
 
     if devel:
@@ -91,8 +98,9 @@ def update_gitbook(content, devel=False):
 
     try:
         resp = requests.post(
-                url.format(space_uid=SPACE_UID, variant_id=VARIANT_ID, page_id=PAGE_ID),
-                headers={"Authorization": "Bearer {}".format(TOKEN), "Content-Type": "application/json"},
+                url.format(space_uid=cfg["space_uid"], variant_id=cfg["variant_id"], page_id=cfg["page_id"]),
+                headers={"Authorization": "Bearer {}".format(cfg["token"]),
+                         "Content-Type": "application/json"},
                 json=DATA
                 )
         get_logger().info("RESP: %d, %s" % (resp.status_code, resp.content))
@@ -102,16 +110,28 @@ def update_gitbook(content, devel=False):
 
 def main():
     set_logger()
-    tools = []
+    tools = {}
     for root, dirs, files in os.walk(".", topdown=False):
         for file_name in files:
             if file_name.endswith(".sls"):
                 file_path = os.path.join(root, file_name)
-                header = parse_header(file_path)
-                if header:
-                    tools.append(header)
+                try:
+                    d = parse_header(file_path)
+                except KeyError as e:
+                    get_logger().error(str(e))
+                    continue
 
-    content = "\n\n\n\n".join([to_markdown(t) for t in tools])
+                for cat in d["categories"]:
+                    tools.setdefault(cat, [])
+                    tools[cat].append(d)
+
+    markdowns = []
+    for cat, tool_list  in sorted(tools.items()):
+        markdowns.append("## {}".format(cat))
+        for d in tool_list:
+            markdowns.append(to_markdown(d))
+
+    content = "\n\n".join(markdowns)
     update_gitbook(content)
 
 
