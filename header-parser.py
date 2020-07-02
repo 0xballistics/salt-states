@@ -16,7 +16,7 @@ def set_logger():
 
     handler = logging.StreamHandler(sys.stderr)
     handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     root.addHandler(handler)
     return root
@@ -59,18 +59,18 @@ def parse_header(file_path):
 
 
 def to_markdown(tool):
-    header = "### {}".format(tool["name"])
-    markdown = [header]
+    header = "### {}\n".format(tool["name"])
+    markdown = []
     tmp = "**{}**: {}"
     markdown.append(tmp.format("Categories", ",".join(tool["categories"])))
     for key, val in tool["fields"]:
         markdown.append(tmp.format(key,val))
 
-    return "\n\n".join(markdown)
+    return header + "  \n".join(markdown)
 
 
 def update_gitbook(content, devel=False):
-    url = "https://api-beta.gitbook.com/v1/spaces/{space_uid}/content/v/{variant_id}/id/{page_id}?format=markdown"
+    url = "https://api-beta.gitbook.com/v1/spaces/{space_id}/content/v/{variant_id}/url/{page_url}"
 
     with open("gitbook-config.json") as gitbook_config:
         cfg = json.load(gitbook_config)
@@ -79,7 +79,7 @@ def update_gitbook(content, devel=False):
         "document": {
             "transforms": [
                 {
-                    "type": "replace",
+                    "transform": "replace",
                     "fragment": {
                         "markdown": content
                     }
@@ -91,14 +91,12 @@ def update_gitbook(content, devel=False):
     with open("tools.md", "w") as f:
         f.write(content+"\n")
 
-
     if devel:
         return
 
-
     try:
         resp = requests.post(
-                url.format(space_uid=cfg["space_uid"], variant_id=cfg["variant_id"], page_id=cfg["page_id"]),
+                url.format(space_id=cfg["space_id"], variant_id=cfg["variant_id"], page_url=cfg["page_url"]),
                 headers={"Authorization": "Bearer {}".format(cfg["token"]),
                          "Content-Type": "application/json"},
                 json=DATA
