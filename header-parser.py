@@ -43,6 +43,8 @@ def parse_header(file_path):
                         name = value
                     elif key.lower() == "category":
                         categories = [v.strip() for v in value.split(',') if v.strip()]
+                        if len(categories) >= 2:
+                            get_logger().info(f"{name} has more than 1 categories: {value}")
                     else:
                         fields.append((key, value))
                 else:
@@ -69,11 +71,8 @@ def to_markdown(tool):
     return header + "  \n".join(markdown)
 
 
-def update_gitbook(content, devel=False):
-    url = "https://api-beta.gitbook.com/v1/spaces/{space_id}/content/v/{variant_id}/url/{page_url}"
-
-    with open("gitbook-config.json") as gitbook_config:
-        cfg = json.load(gitbook_config)
+def update_page(cfg, page_url, content):
+    url = "https://api-beta.gitbook.com/v1/spaces/{space_id}/content/v/{variant_id}/url/{parent_url}/{page_url}"
 
     DATA = {
         "document": {
@@ -88,23 +87,65 @@ def update_gitbook(content, devel=False):
         }
     }
 
-    with open("tools.md", "w") as f:
-        f.write(content+"\n")
-
-    if devel:
-        return
-
     try:
         resp = requests.post(
-                url.format(space_id=cfg["space_id"], variant_id=cfg["variant_id"], page_url=cfg["page_url"]),
+                url.format(space_id=cfg["space_id"], variant_id=cfg["variant_id"], parent_url=cfg["parent_url"], page_url=page_url),
                 headers={"Authorization": "Bearer {}".format(cfg["token"]),
                          "Content-Type": "application/json"},
                 json=DATA
                 )
-        get_logger().info("RESP: %d, %s" % (resp.status_code, resp.content))
+        get_logger().info("UPDATE %s RESP: %d, %s" % (page_url, resp.status_code, resp.content))
     except Exception as e:
         get_logger().exception(e)
 
+
+def insert_page(cfg, title):
+    page_url = re.sub(r"[^-a-z0-9.+_]", "+", title.lower())
+    url = "https://api-beta.gitbook.com/v1/spaces/{space_id}/content/v/{variant_id}/url/{parent_url}"
+
+    DATA = {
+        "pages": [
+            {
+                "title": title,
+                "description": "Discover The Tools",
+                "path": page_url,
+                "document": "" # setting content here does not work now.
+            }
+        ]
+    }
+    try:
+        resp = requests.put(
+                url.format(space_id=cfg["space_id"], variant_id=cfg["variant_id"], parent_url=cfg["parent_url"]),
+                headers={"Authorization": "Bearer {}".format(cfg["token"]),
+                         "Content-Type": "application/json"},
+                json=DATA
+                )
+        get_logger().info("INSERT %s RESP: %d, %s" % (page_url, resp.status_code, resp.content))
+    except Exception as e:
+        get_logger().exception(e)
+
+    return page_url
+
+
+def get_gitbook_pages(cfg):
+    url = "https://api-beta.gitbook.com/v1/spaces/{space_id}/content/v/{variant_id}/url/{parent_url}"
+
+    try:
+        resp = requests.get(
+                url.format(space_id=cfg["space_id"], variant_id=cfg["variant_id"], parent_url=cfg["parent_url"]),
+                headers={"Authorization": "Bearer {}".format(cfg["token"]),
+                         "Content-Type": "application/json"}
+                )
+        get_logger().info("RESP: %d" % (resp.status_code))
+        if resp.status_code != 200:
+            raise RuntimeError(f"Cannot get gitbook pages! Response status: {resp.status_code}")
+
+        js = resp.json()
+        d = {page["title"]: page["path"] for page in js["pages"]}
+        return d
+    except Exception as e:
+        get_logger().exception(e)
+        raise
 
 def main():
     set_logger()
@@ -123,14 +164,18 @@ def main():
                     tools.setdefault(cat, [])
                     tools[cat].append(d)
 
-    markdowns = []
-    for cat, tool_list  in sorted(tools.items()):
-        markdowns.append("## {}".format(cat))
-        for d in tool_list:
-            markdowns.append(to_markdown(d))
 
-    content = "\n\n".join(markdowns)
-    update_gitbook(content)
+    with open("gitbook-config.json") as gitbook_config:
+        cfg = json.load(gitbook_config)
+
+    pages = get_gitbook_pages(cfg)
+
+    for cat, tool_list  in sorted(tools.items()):
+        content = "\n\n".join([to_markdown(d) for d in tool_list])
+        if cat not in pages:
+            pages[cat] = insert_page(cfg, cat)
+
+        update_page(cfg, pages[cat], content)
 
 
 if __name__ == "__main__":
