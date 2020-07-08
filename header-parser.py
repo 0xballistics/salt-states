@@ -5,6 +5,7 @@ import os
 import requests
 import json
 
+REPO_URL = "https://github.com/REMnux/salt-states"
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -27,6 +28,7 @@ header_regex = re.compile(r"#\s*(?P<key>.*?):\s*(?P<value>.*)")
 def parse_header(file_path):
     fields = []
     name = None
+    desc = ""
     categories = []
     with open(file_path) as f:
         for line in f:
@@ -38,11 +40,11 @@ def parse_header(file_path):
             else:
                 match = header_regex.match(line)
                 if match:
-                    key, value = match.group("key"), match.group("value")
+                    key, value = match.group("key"), match.group("value").strip()
                     if key.lower() == "name":
                         name = value
                     elif key.lower() == "category":
-                        if not value.strip():
+                        if not value:
                             raise KeyError("categories field empty: %s" % file_path) 
                         for v in value.split(','):
                             full_cat = [vv.strip() for vv in v.split(':', 1)]
@@ -52,7 +54,9 @@ def parse_header(file_path):
 
                         if len(categories) >= 2:
                             get_logger().info(f"{name} has more than 1 categories: {value}")
-                    else:
+                    elif key.lower() == "description":
+                        desc = value
+                    elif value: # ignore if empty
                         fields.append((key, value))
                 else:
                     get_logger().warning("file: %s - line does not match with regex: %s" % (file_path, line))
@@ -64,18 +68,24 @@ def parse_header(file_path):
     elif not categories:
         raise KeyError("found header but no categories: %s" % file_path)
 
-    return {"name": name, "categories": categories, "fields": fields}
+    state_file_path = os.path.splitext(file_path)[0].strip('./').replace("/", ".")
+    state_file_link = REPO_URL + '/blob/master/' + file_path # file_path is relative so it should work
+
+    return {"name": name, "categories": categories, "fields": fields, "desc": desc, 
+    "state_file": [state_file_path, state_file_link]}
 
 
 def to_markdown(tool):
-    header = "### {}\n".format(tool["name"])
+    header = "# {}\n".format(tool["name"])
+    desc = (tool["desc"] + "\n\n") if tool["desc"] else ""
     markdown = []
     tmp = "**{}**: {}"
     # markdown.append(tmp.format("Categories", ",".join(tool["categories"])))
     for key, val in tool["fields"]:
         markdown.append(tmp.format(key,val))
+    markdown.append("**State File**: [{}]({})".format(*tool["state_file"]))
 
-    return header + "  \n".join(markdown)
+    return header + desc + "  \n".join(markdown)
 
 
 def update_page(cfg, page_url, content):
@@ -114,7 +124,7 @@ def insert_page(cfg, title):
         "pages": [
             {
                 "title": title,
-                "description": "Discover The Tools",
+                "description": cfg["parent_title"],
                 "path": page_url,
                 "document": "" # setting content here does not work.
             }
@@ -143,7 +153,7 @@ def get_gitbook_pages(cfg):
                 headers={"Authorization": "Bearer {}".format(cfg["token"]),
                          "Content-Type": "application/json"}
                 )
-        get_logger().info("RESP: %d" % (resp.status_code))
+        get_logger().info("GET PAGES. RESP: %d" % (resp.status_code))
         if resp.status_code != 200:
             raise RuntimeError(f"Cannot get gitbook pages! Response status: {resp.status_code}")
 
@@ -194,7 +204,7 @@ def main():
             content = "\n\n".join([to_markdown(d) for d in tool_list])
             
             if subcat != "":
-                subcat_cfg = dict(cfg, parent_url=cfg["parent_url"]+"/"+subpages[''])
+                subcat_cfg = dict(cfg, parent_url=cfg["parent_url"]+"/"+subpages[''], parent_title=cat)
             else:
                 subcat_cfg = cfg
 
