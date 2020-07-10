@@ -4,8 +4,40 @@ import sys
 import os
 import requests
 import json
+import argparse
 
-REPO_URL = "https://github.com/REMnux/salt-states"
+DEFAULT_REPO_URL = "https://github.com/REMnux/salt-states"
+DEFAULT_PARENT_PATH = "discover-the-tools"  # used to find the page group
+DEFAULT_PARENT_TITLE = "Discover the Tools"  # used as default page sub-header
+DEFAULT_VARIANTID = "master"
+
+
+def env_or_required(key, help, default=None):
+    if os.environ.get(key) or default:
+        d = {'default': os.environ.get(key) or default}
+    else:
+        d = {'required': True}
+
+    d["help"] = "ENV_VAR: {}\n".format(key) + 
+    "Default: {}\n".format(default) if default else "" +
+    help
+
+    return d
+
+
+parser = argparse.ArgumentParser(description='Parses headers and updates the gitbook. \nArguments can be provided via command line or environment variables. Precendence: CMD>ENV>DEFAULT')
+parser.add_argument('--gitbook-token', 
+        **env_or_required("GITBOOK_TOKEN", help='Gitbook REST API Token'))
+parser.add_argument('--gitbook-spaceid', 
+        **env_or_required("GITBOOK_SPACEID", help='Gitbook Space UID.'))
+parser.add_argument('--gitbook-variantid', 
+        **env_or_required("GITBOOK_VARIANTID", default=DEFAULT_VARIANTID, help='Gitbook Variant ID.'))
+parser.add_argument('--gitbook-parent-path', 
+        **env_or_required("GITBOOK_PARENTPATH", default=DEFAULT_PARENT_PATH, help='Gitbook Parent Path. Used to find the page group'))
+parser.add_argument('--gitbook-parent-title', 
+        **env_or_required("GITBOOK_PARENTTITLE", default=DEFAULT_PARENT_TITLE, help='Gitbook parent page title. Used as default page sub-header'))
+parser.add_argument('--repo-url', 
+        **env_or_required("REPO_URL", default=DEFAULT_REPO_URL, help='Git repo URL. Used to create links to sls files.'))
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -124,7 +156,7 @@ def insert_page(cfg, title):
         "pages": [
             {
                 "title": title,
-                "description": cfg["parent_title"],
+                "description": PARENT_TITLE,
                 "path": page_url,
                 "document": "" # setting content here does not work.
             }
@@ -169,7 +201,7 @@ def get_gitbook_pages(cfg):
         get_logger().exception(e)
         raise
 
-def main():
+def main(args):
     set_logger()
     tools = {}
     for root, dirs, files in os.walk(".", topdown=False):
@@ -188,9 +220,6 @@ def main():
                     tools[cat][subcat].append(d)
 
 
-    with open("gitbook-config.json") as gitbook_config:
-        cfg = json.load(gitbook_config)
-
     pages = get_gitbook_pages(cfg)
 
     for cat, subcat_d  in sorted(tools.items()):
@@ -204,7 +233,7 @@ def main():
             content = "\n\n".join([to_markdown(d) for d in tool_list])
             
             if subcat != "":
-                subcat_cfg = dict(cfg, parent_url=cfg["parent_url"]+"/"+subpages[''], parent_title=cat)
+                subcat_cfg = dict(cfg, parent_url=PARENT_PATH+"/"+subpages[''], parent_title=cat)
             else:
                 subcat_cfg = cfg
 
@@ -215,5 +244,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    args = parser.parse_args()
+    main(args)
 
