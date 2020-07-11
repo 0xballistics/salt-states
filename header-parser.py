@@ -66,7 +66,7 @@ def parse_header(base_path, file_name, repo_url):
     with open(file_path) as f:
         for line in f:
             line = line.strip()
-            if not line: # can be empty line
+            if not line or line.startswith("{%") or line.startswith("{{"): # can be empty line or template markup
                 continue
             elif not line.startswith("#"):
                  break
@@ -80,6 +80,8 @@ def parse_header(base_path, file_name, repo_url):
                         if not value:
                             raise KeyError("categories field empty: %s" % file_path) 
                         for v in value.split(','):
+                            if not v.strip():
+                                continue  # there were empty category after comma for one case
                             full_cat = [vv.strip() for vv in v.split(':', 1)]
                             if len(full_cat) == 1:
                                 full_cat.append("")
@@ -253,7 +255,7 @@ def main(args):
         "variant_id": args.gitbook_variantid,
         "parent_path": args.gitbook_parent_path
     }
-    pages, cfg["parent_page_title"] = get_gitbook_pages(cfg)
+    pages, cfg["parent_title"] = get_gitbook_pages(cfg)
      
     update_gitbook(cfg, tools, pages)
 
