@@ -7,6 +7,9 @@ include:
   - remnux.repos.sift
   - remnux.repos.mono
   - remnux.repos.remnux
+  - remnux.repos.wireshark-dev
+  - remnux.repos.microsoft
+  - remnux.repos.microsoft-vscode
 
 remnux-repos:
   test.nop:
@@ -19,3 +22,6 @@ remnux-repos:
       - sls: remnux.repos.sift
       - sls: remnux.repos.mono
       - sls: remnux.repos.remnux
+      - sls: remnux.repos.wireshark-dev
+      - sls: remnux.repos.microsoft
+      - sls: remnux.repos.microsoft-vscode

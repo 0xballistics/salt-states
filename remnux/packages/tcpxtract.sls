@@ -1,9 +1,9 @@
 # Name: tcpxtract
 # Website: http://tcpxtract.sourceforge.net/
-# Description: Tool for extracting files from network traffic
-# Category: Examine browser malware: Websites
+# Description: Extract files from network traffic.
+# Category: Explore Network Interactions: Monitoring
 # Author: Nick Harbour
-# License: GNU General Public License version 2.0 (GPLv2)
+# License: GNU General Public License (GPL) v2
 # Notes:
 
 tcpxtract:

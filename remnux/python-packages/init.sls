@@ -3,7 +3,6 @@ include:
   - remnux.python-packages.bitstring
   - remnux.python-packages.bottle
   - remnux.python-packages.cryptography
-  - remnux.python-packages.cybox
   - remnux.python-packages.distorm3
   - remnux.python-packages.docker-compose
   - remnux.python-packages.fuzzywuzzy
@@ -14,17 +13,14 @@ include:
   - remnux.python-packages.ndg-httpsclient
   - remnux.python-packages.olefile
   - remnux.python-packages.oletools
-  - remnux.python-packages.passivetotal
   - remnux.python-packages.peframe
   - remnux.python-packages.pydeep
   - remnux.python-packages.pyelftools
   - remnux.python-packages.pygeoip
-  - remnux.python-packages.pylzma
   - remnux.python-packages.pypdns
   - remnux.python-packages.pypssl
   - remnux.python-packages.r2pipe
   - remnux.python-packages.rarfile
-  - remnux.python-packages.rekall
   - remnux.python-packages.requesocks
   - remnux.python-packages.setuptools
   - remnux.python-packages.shodan
@@ -38,6 +34,25 @@ include:
   - remnux.python-packages.thug
   - remnux.python-packages.unxor
   - remnux.python-packages.xlmmacrodeobfuscator
+  - remnux.python-packages.officeparser
+  - remnux.python-packages.vipermonkey
+  - remnux.python-packages.unicode
+  - remnux.python-packages.volatility
+  - remnux.python-packages.ioc-writer
+  - remnux.python-packages.volatility3
+  - remnux.python-packages.fakemail
+  - remnux.python-packages.pyperclip
+  - remnux.python-packages.balbuzard
+  - remnux.python-packages.dc3-mwcp
+  - remnux.python-packages.yara-python3
+  - remnux.python-packages.ratdecoders
+  - remnux.python-packages.poster
+  - remnux.python-packages.pylzma-python3
+  - remnux.python-packages.viper-framework
+  - remnux.python-packages.time-decode
+  - remnux.python-packages.pcodedmp
+  - remnux.python-packages.droidlysis
+  - remnux.python-packages.malwoverview
 
 remnux-python-packages:
   test.nop:
@@ -46,7 +61,6 @@ remnux-python-packages:
       - sls: remnux.python-packages.bitstring
       - sls: remnux.python-packages.bottle
       - sls: remnux.python-packages.cryptography
-      - sls: remnux.python-packages.cybox
       - sls: remnux.python-packages.distorm3
       - sls: remnux.python-packages.docker-compose
       - sls: remnux.python-packages.fuzzywuzzy
@@ -57,17 +71,14 @@ remnux-python-packages:
       - sls: remnux.python-packages.ndg-httpsclient
       - sls: remnux.python-packages.olefile
       - sls: remnux.python-packages.oletools
-      - sls: remnux.python-packages.passivetotal
       - sls: remnux.python-packages.peframe
       - sls: remnux.python-packages.pydeep
       - sls: remnux.python-packages.pyelftools
       - sls: remnux.python-packages.pygeoip
-      - sls: remnux.python-packages.pylzma
       - sls: remnux.python-packages.pypdns
       - sls: remnux.python-packages.pypssl
       - sls: remnux.python-packages.r2pipe
       - sls: remnux.python-packages.rarfile
-      - sls: remnux.python-packages.rekall
       - sls: remnux.python-packages.requesocks
       - sls: remnux.python-packages.setuptools
       - sls: remnux.python-packages.shodan
@@ -81,3 +92,22 @@ remnux-python-packages:
       - sls: remnux.python-packages.thug
       - sls: remnux.python-packages.unxor
       - sls: remnux.python-packages.xlmmacrodeobfuscator
+      - sls: remnux.python-packages.officeparser
+      - sls: remnux.python-packages.vipermonkey
+      - sls: remnux.python-packages.unicode
+      - sls: remnux.python-packages.volatility
+      - sls: remnux.python-packages.ioc-writer
+      - sls: remnux.python-packages.volatility3
+      - sls: remnux.python-packages.fakemail
+      - sls: remnux.python-packages.pyperclip
+      - sls: remnux.python-packages.balbuzard
+      - sls: remnux.python-packages.dc3-mwcp
+      - sls: remnux.python-packages.yara-python3
+      - sls: remnux.python-packages.ratdecoders
+      - sls: remnux.python-packages.poster
+      - sls: remnux.python-packages.pylzma-python3
+      - sls: remnux.python-packages.viper-framework
+      - sls: remnux.python-packages.time-decode
+      - sls: remnux.python-packages.pcodedmp
+      - sls: remnux.python-packages.droidlysis
+      - sls: remnux.python-packages.malwoverview

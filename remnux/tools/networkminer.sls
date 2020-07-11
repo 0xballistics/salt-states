@@ -1,9 +1,9 @@
 # Name: Network Miner Free Edition
 # Website: https://www.netresec.com/
-# Description:Examine network traffic and carve PCAP capture files
-# Category: Examine browser malware: Websites
+# Description: Examine network traffic and carve PCAP capture files.
+# Category: Explore Network Interactions: Monitoring
 # Author: NETRESEC AB
-# License: https://www.netresec.com/?page=NetworkMinerSourceCode
+# License: GNU General Public License (GPL) v2: https://www.netresec.com/?page=NetworkMinerSourceCode
 # Notes: networkminer
 
 include:
@@ -43,5 +43,5 @@ remnux-networkminer-wrapper:
     - watch:
         - file: /usr/local/NetworkMiner_2-5/NetworkMiner.exe
     - contents:
-        #!/bin/bash
-        mono /usr/local/NetworkMiner_2-5/NetworkMiner.exe ${*}
+      - '#!/bin/bash'
+      - mono /usr/local/NetworkMiner_2-5/NetworkMiner.exe ${*}

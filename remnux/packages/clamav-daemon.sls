@@ -1,10 +1,10 @@
 # Name: ClamAV
 # Website: https://www.clamav.net
 # Description: Scan files for malware signatures.
-# Category: File Properties and Contents: Scan
+# Category: Examine Static Properties: PE Files, Statically Analyze Code: Unpacking
 # Author: https://www.clamav.net/about
-# License: https://www.clamav.net/about
-# Notes: Run "freshclam" to download and update signatures.
+# License: GNU General Public License (GPL): https://www.clamav.net/about
+# Notes: clamscan, freshclam
 
 clamav-daemon:
   pkg.installed

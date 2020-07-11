@@ -1,19 +1,17 @@
 # Name: bulk_extractor
 # Website: https://github.com/simsong/bulk_extractor/
 # Description: Extract interesting strings from binary files.
-# Category: Artifact Extraction and Decoding
+# Category: Examine Static Properties: General, Perform Memory Forensics
 # Author: https://github.com/simsong/bulk_extractor/blob/master/AUTHORS
-# License: https://github.com/simsong/bulk_extractor/blob/master/COPYING
+# License: Portions Public Domain, portions MIT License: https://github.com/simsong/bulk_extractor/blob/master/LICENSE.md
 # Notes: 
 
 include:
   - remnux.repos.sift
   - remnux.repos.openjdk
-  - remnux.packages.libewf
 
 bulk-extractor:
   pkg.installed:
     - require:
       - pkgrepo: sift-repo
       - pkgrepo: openjdk-repo
-      - sls: remnux.packages.libewf

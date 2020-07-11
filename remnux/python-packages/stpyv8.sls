@@ -1,13 +1,12 @@
 # Name: STPyV8
 # Website: https://github.com/area1/stpyv8
 # Description: Python3 and JavaScript interop engine, fork of the original PyV8 project
-# Category: Examine browser malware: Websites
+# Category: Dynamically Reverse-Engineer Code: Scripts
 # Author: Area1 Security
-# License: https://github.com/area1/stpyv8/blob/master/LICENSE.txt
+# License: Apache License 2.0: https://github.com/area1/stpyv8/blob/master/LICENSE.txt
 # Notes: 
 
 include:
-  - remnux.packages.git
   - remnux.packages.python3
   - remnux.packages.python
   - remnux.packages.sudo
@@ -17,17 +16,13 @@ include:
   - remnux.packages.python3-setuptools
   - remnux.packages.python-setuptools
   - remnux.packages.build-essential
+  - remnux.packages.python-pip
   - remnux.packages.python3-pip
 
-remnux-git-stpyv8:
-  git.cloned:
-    - name: https://github.com/area1/stpyv8
-    - target: /usr/local/src/stpyv8
-
 remnux-pip3-stpyv8:
-  cmd.run:
-    - cwd: /usr/local/src/stpyv8/
-    - name: /usr/bin/pip3 install wheels/ubuntu-18.04/stpyv8-7.9.317.33-cp36-cp36m-linux_x86_64.whl
+  pip.installed:
+    - name: https://github.com/area1/stpyv8/releases/download/v8.3.110.13/stpyv8-8.3.110.13-cp36-cp36m-linux_x86_64.whl
+    - bin_env: /usr/bin/python3
     - require:
       - sls: remnux.packages.python3
       - sls: remnux.packages.python3-pip
@@ -35,5 +30,3 @@ remnux-pip3-stpyv8:
       - sls: remnux.packages.libboost-python-dev
       - sls: remnux.packages.libboost-system-dev
       - sls: remnux.packages.libboost-dev
-    - watch:
-      - git: remnux-git-stpyv8

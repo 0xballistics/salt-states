@@ -1,9 +1,9 @@
 # Name: cfr
 # Website: https://www.benf.org/other/cfr/
 # Description: Java decompiler
-# Category: Examine browser malware: Java
+# Category: Statically Analyze Code: Java
 # Author: Lee Benfield
-# License: https://github.com/leibnitz27/cfr/blob/master/LICENSE
+# License: MIT License: https://github.com/leibnitz27/cfr/blob/master/LICENSE
 # Notes: 
 
 include:
@@ -35,6 +35,6 @@ remnux-tools-cfr-wrapper:
     - watch:
       - file: remnux-tools-cfr-source
     - contents:
-        #!/bin/bash
-        java -jar /usr/local/cfr/cfr-0.149.jar ${*}
+      - '#!/bin/bash'
+      - java -jar /usr/local/cfr/cfr-0.149.jar ${*}
 

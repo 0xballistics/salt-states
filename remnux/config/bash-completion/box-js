@@ -1,0 +1,13 @@
+. /etc/bash_completion.d/remnuxlib
+
+_box-js() 
+{
+	local cur
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	
+	case "$cur" in -*)
+		_parse_args "box-js -h"
+	esac
+}
+
+complete -d -o default -F _box-js box-js

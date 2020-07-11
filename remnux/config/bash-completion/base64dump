@@ -1,0 +1,13 @@
+. /etc/bash_completion.d/remnuxlib
+
+_base64dump() 
+{
+	local cur
+	cur="${COMP_WORDS[COMP_CWORD]}"
+
+	case "$cur" in -*)
+		_parse_args "base64dump.py -h"
+	esac
+}
+
+complete -d -o default -F _base64dump base64dump.py

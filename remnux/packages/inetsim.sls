@@ -1,10 +1,10 @@
 # Name: INetSim
 # Website: https://www.inetsim.org/
-# Description: Emilate common network services.
-# Category: Network Interactions
+# Description: Emulate common network services and interact with malware.
+# Category: Explore Network Interactions: Services
 # Author: Thomas Hungenberg, Matthias Eckert
-# License: https://www.gnu.org/licenses/gpl-3.0.txt
-# Notes: 
+# License: GNU General Public License (GPL) v3
+# Notes: inetsim
 
 include:
   - remnux.repos.inetsim

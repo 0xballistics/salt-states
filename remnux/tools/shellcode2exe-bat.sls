@@ -1,7 +1,7 @@
 # Name: shellcode2exe.bat
 # Website: https://github.com/repnz/shellcode2exe
-# Description: Convert 32 and 64-bit shellcode to a Windows executable file
-# Category: Examine document files: Shellcode
+# Description: Convert 32 and 64-bit shellcode to a Windows executable file.
+# Category: Dynamically Reverse-Engineer Code: Shellcode
 # Author: Ori Damari: https://twitter.com/0xrepnz
 # License: Free, unknown license
 # Notes: 
@@ -26,5 +26,5 @@ remnux-tools-shellcode2exe-bat-wrapper:
     - watch:
       - git: remnux-tools-shellcode2exe-bat
     - contents:
-        #!/bin/bash
-        wine cmd /c "/usr/local/shellcode2exe-bat/shellcode2exe.bat ${*}"
+      - '#!/bin/bash'
+      - wine cmd /c "/usr/local/shellcode2exe-bat/shellcode2exe.bat ${*}"

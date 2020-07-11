@@ -1,9 +1,9 @@
 # Name: SpiderMonkey (Patched)
 # Website: https://blog.didierstevens.com/2018/04/19/update-patched-spidermonkey/
 # Description: Execute and deobfuscate JavaScript using a patched version of Mozilla's standalone JavaScript engine.
-# Category: Script Analysis and Deobfuscation
-# Author: SpiderMonkey by Mozilla Foundation; patchby Didier Stevens: https://twitter.com/DidierStevens
-# License: https://github.com/mozilla/treeherder/blob/master/LICENSE.txt
+# Category: Dynamically Reverse-Engineer Code: Scripts
+# Author: SpiderMonkey by Mozilla Foundation, patched by Didier Stevens: https://twitter.com/DidierStevens
+# License: Mozilla Public License 2.0: https://github.com/mozilla/treeherder/blob/master/LICENSE.txt
 # Notes: js-ascii, js-file
 
 include:

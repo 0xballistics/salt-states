@@ -1,13 +1,13 @@
 # Name: CyberChef
 # Website: https://github.com/gchq/CyberChef/
 # Description: Decode and otherwise analyze data
-# Category: 
+# Category: Examine Static Properties: Deobfuscation
 # Author: GCHQ
-# License: https://github.com/gchq/CyberChef/blob/master/LICENSE
+# License: Apache License 2.0: https://github.com/gchq/CyberChef/blob/master/LICENSE
 # Notes: cyberchef
 
-{% set version = "9.20.3" -%}
-{% set hash = "033c0a44e0b80b6ac58bb5c00073eaccc0ae3e56853b91095930f48eeebcdaef" -%}
+{% set version = "9.21.0" -%}
+{% set hash = "5a53c4e0bee1303ef73210a6e2fbb3f5151d4ad09cc3681581c6c35b15584126" -%}
 
 include:
   - remnux.packages.firefox
@@ -29,5 +29,5 @@ remnux-tools-cyberchef-wrapper:
     - watch:
       - archive: remnux-tools-cyberchef
     - contents:
-        #!/bin/bash
-        firefox /usr/local/cyberchef/CyberChef_v{{ version }}.html &
+      - '#!/bin/bash'
+      - firefox /usr/local/cyberchef/CyberChef_v{{ version }}.html &

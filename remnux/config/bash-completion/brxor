@@ -1,0 +1,13 @@
+. /etc/bash_completion.d/remnuxlib
+
+_brxor() 
+{
+	local cur
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	
+	case "$cur" in -*)
+		_parse_args "brxor.py --help"
+	esac
+}
+
+complete -d -o default -F _brxor brxor.py

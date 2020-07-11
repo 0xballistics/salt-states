@@ -1,10 +1,10 @@
 # Name: Xpdf
 # Website: http://www.xpdfreader.com
 # Description: View and manipulate PDF files.
-# Category: File Editing and Viewing: Documents
+# Category: View or Edit Files
 # Author: Derek Noonburg
-# License: http://www.xpdfreader.com/opensource.html
-# Notes: 
+# License: Dual-licensed under GNU General Public License (GPL) v2 and GPL v3: http://www.xpdfreader.com/opensource.html
+# Notes: xpdf
 
 xpdf:
   pkg.installed

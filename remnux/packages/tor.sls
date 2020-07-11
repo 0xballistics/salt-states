@@ -1,9 +1,9 @@
 # Name: tor
-# Website: https://www.torproject.org/
-# Description: Private browsing toolkit
-# Category: Examine browser malware: Websites
-# Author: 
-# License: https://www.torproject.org/about/trademark/
+# Website: https://www.torproject.org
+# Description: Obfuscate your origins by routing traffic through a network of anonymizing nodes.
+# Category: Explore Network Interactions: Connecting
+# Author: Roger Dingledine, Nick Mathewson, Tor Project Inc.
+# License: 3-Clause BSD license: https://github.com/torproject/tor/blob/master/LICENSE
 # Notes: 
 
 tor:

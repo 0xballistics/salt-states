@@ -1,13 +1,13 @@
 # Name: NoMoreXOR.py
 # Website: https://github.com/hiddenillusion/NoMoreXOR
-# Description: Python 2 tool to help guess a file's 256-byte XOR by using frequency analysis
-# Category: Artifact Extraction and Decoding: Deobfuscate
+# Description: Help guess a file's 256-byte XOR by using frequency analysis.
+# Category: Examine Static Properties: Deobfuscation
 # Author: Glenn P. Edwards Jr.
 # License: Free, unknown license
 # Notes:
 
 include:
-  - remnux.packages.python-yara
+  - remnux.python-packages.yara-python
 
 remnux-scripts-nomorexor-source:
   file.managed:
@@ -17,5 +17,5 @@ remnux-scripts-nomorexor-source:
   - mode: 755
   - makedirs: false
   - require:
-    - sls: remnux.packages.python-yara
+    - sls: remnux.python-packages.yara-python
 

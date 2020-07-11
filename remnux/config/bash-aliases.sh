@@ -7,13 +7,13 @@ function title() {
   PS1=${ORIG}${TITLE}
 }
 
-# Show the IP address of the primary network interface
-function myip {
-  hostname -I | awk '{print $1}'
-}
-
 # Renew DCHP release using a single command
-alias renew-dhcp="echo 'Old IP: `myip`' && sudo dhclient -r && sudo dhclient && echo 'New IP: `myip`'"
+function renew-dhcp {
+  echo Old IP: `myip`
+  sudo dhclient -r
+  sudo dhclient
+  echo New IP: `myip`
+}
 
 # Clean up and convert encodings when examining shellcode
 function unicode2hex-escaped {
@@ -32,6 +32,10 @@ function objdump {
   /usr/bin/objdump -M intel ${*}
 }
 
+function inetsim {
+  sudo /usr/bin/inetsim ${*}
+}
+
 function fakedns {
   sudo /usr/local/bin/fakedns ${*}
 }
@@ -46,6 +50,21 @@ function set-static-ip {
 # A wrapper around the command to stop and start ngnix for old timers
 function httpd {
   sudo systemctl ${*} nginx
+}
+
+# A wrapper around the "remnux" command to avoid having to specify "sudo"
+function remnux {
+    SUDO=/usr/bin/sudo
+    REMNUX_CLI=/usr/local/bin/remnux
+  if [ -e $SUDO ]; then
+    if [ $USER == "root" ]; then
+      $REMNUX_CLI ${*}
+    else
+      sudo $REMNUX_CLI ${*}
+    fi
+  else
+    $REMNUX_CLI ${*}
+  fi
 }
 
 # A wrapper around the command to stop and start SSH server for old timers
