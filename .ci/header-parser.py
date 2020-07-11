@@ -10,7 +10,7 @@ import argparse
 DEFAULT_REPO_URL = "https://github.com/REMnux/salt-states"
 DEFAULT_PARENT_PATH = "discover-the-tools"  # used to find the page group
 DEFAULT_VARIANTID = "master"
-DEFAULT_SLS_SEARCH_PATH = os.path.dirname(os.path.realpath(__file__))
+DEFAULT_SLS_SEARCH_PATH = os.path.dirname(os.path.realpath(__file__)) + "/../"
 
 def env_or_required(key, help, default=None):
     if os.environ.get(key) or default:
