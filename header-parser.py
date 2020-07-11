@@ -250,9 +250,9 @@ def main(args):
     set_logger()
     tools = find_tools(args.sls_search_path, args.repo_url)
     cfg = {
-        "token": args.gitbook_token,
-        "space_id": args.gitbook_spaceid,
-        "variant_id": args.gitbook_variantid,
+        "token": args.gitbook_token.strip(),
+        "space_id": args.gitbook_spaceid.strip(),
+        "variant_id": args.gitbook_variantid.strip(),
         "parent_path": args.gitbook_parent_path
     }
     pages, cfg["parent_title"] = get_gitbook_pages(cfg)
